@@ -52,6 +52,14 @@ async function run() {
             res.send(result);
         })
 
+        app.get('/plants_added/:email', async(req,res)=> {
+            const id = req.params.email;
+            console.log(id);
+            const query = {email : id}
+            const result =  await plantCollection.find(query).toArray();
+            res.send(result);
+        })
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
