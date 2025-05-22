@@ -45,25 +45,43 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/plants/:id', async(req, res)=> {
+        app.get('/plants/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id : new ObjectId(id)};
+            const query = { _id: new ObjectId(id) };
             const result = await plantCollection.findOne(query);
             res.send(result);
         })
 
-        app.get('/plants_added/:email', async(req,res)=> {
+        app.get('/plants_added/:email', async (req, res) => {
             const id = req.params.email;
             console.log(id);
-            const query = {email : id}
-            const result =  await plantCollection.find(query).toArray();
+            const query = { email: id }
+            const result = await plantCollection.find(query).toArray();
             res.send(result);
         })
 
-        app.put('/plants/:id', async(req, res)=> {
+        app.get('/plants?', async (req, res) => {
+            const { sortField = "name", sortOrder = "asc" } = req.query;
+            const sortQuery = {};
+            sortQuery[sortField] = sortOrder === 'asc' ? 1 : -1;
+
+            console.log("Received query:", req.query);
+            console.log("Sort query:", sortQuery);
+
+            try {
+                const result = await plantCollection.find({}).sort(sortQuery).toArray();
+                res.send(result);
+            }
+            catch {
+                console.error('sorting error', error);
+                res.status(500).send({ error: 'Something went wrong' });
+            }
+        })
+
+        app.put('/plants/:id', async (req, res) => {
             const id = req.params.id;
-            const query = {_id: new ObjectId(id)};
-            const options = {upsert:true};
+            const query = { _id: new ObjectId(id) };
+            const options = { upsert: true };
             const updatedPlant = {
                 $set: req.body
             }
@@ -71,9 +89,9 @@ async function run() {
             res.send(result);
         })
 
-        app.delete('/plants/:id', async (req, res)=> {
+        app.delete('/plants/:id', async (req, res) => {
             const id = req.params.id;
-            const filter = {_id: new ObjectId(id)};
+            const filter = { _id: new ObjectId(id) };
             const result = await plantCollection.deleteOne(filter);
             res.send(result);
         })
