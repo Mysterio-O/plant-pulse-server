@@ -1,9 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const mongodb = require('mongodb');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
-require('dotenv').config();
 
 
 const app = express();
@@ -49,7 +49,7 @@ async function run() {
                 sortObj[sortParam] = 1;
             }
             if (sortParam ==='lastWateredDate') {
-                sortObj[sortParam] = 1;
+                sortObj[sortParam] = -1;
             }
 
             const result = await plantCollection.find().sort(sortObj).toArray()
@@ -93,7 +93,7 @@ async function run() {
 
 
         // Send a ping to confirm a successful connection
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
