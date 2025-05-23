@@ -41,8 +41,20 @@ async function run() {
         })
 
         app.get('/plants', async (req, res) => {
-            const result = await plantCollection.find().toArray();
+            const { sortParam } = req.query;
+            console.log('sort param',sortParam);
+
+            let sortObj = {};
+            if (sortParam ==='nextWateringDate') {
+                sortObj[sortParam] = 1;
+            }
+            if (sortParam ==='lastWateredDate') {
+                sortObj[sortParam] = 1;
+            }
+
+            const result = await plantCollection.find().sort(sortObj).toArray()
             res.send(result)
+
         })
 
         app.get('/plants/:id', async (req, res) => {
@@ -60,23 +72,6 @@ async function run() {
             res.send(result);
         })
 
-        app.get('/plants?', async (req, res) => {
-            const { sortField = "name", sortOrder = "asc" } = req.query;
-            const sortQuery = {};
-            sortQuery[sortField] = sortOrder === 'asc' ? 1 : -1;
-
-            console.log("Received query:", req.query);
-            console.log("Sort query:", sortQuery);
-
-            try {
-                const result = await plantCollection.find({}).sort(sortQuery).toArray();
-                res.send(result);
-            }
-            catch {
-                console.error('sorting error', error);
-                res.status(500).send({ error: 'Something went wrong' });
-            }
-        })
 
         app.put('/plants/:id', async (req, res) => {
             const id = req.params.id;
