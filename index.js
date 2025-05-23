@@ -42,7 +42,7 @@ async function run() {
 
         app.get('/plants', async (req, res) => {
             const { sortParam } = req.query;
-            console.log('sort param',sortParam);
+            // console.log('sort param',sortParam);
 
             let sortObj = {};
             if (sortParam ==='nextWateringDate') {
@@ -66,7 +66,7 @@ async function run() {
 
         app.get('/plants_added/:email', async (req, res) => {
             const id = req.params.email;
-            console.log(id);
+            // console.log(id);
             const query = { email: id }
             const result = await plantCollection.find(query).toArray();
             res.send(result);
